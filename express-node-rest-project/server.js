@@ -23,6 +23,24 @@ mc.connect();
 app.get('/', function (req, res) {
     return res.send({ error: true, message: 'hello' })
 });
+
+// Retrieve all todos 
+app.get('/todos', function (req, res) {
+    mc.query('SELECT * FROM tasks', function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'Todos list.' });
+    });
+});
+
+
+// Search for todos with ‘bug’ in their name
+app.get('/todos/search/:keyword', function (req, res) {
+    let keyword = req.params.keyword;
+    mc.query("SELECT * FROM tasks WHERE task LIKE ? ", ['%' + keyword + '%'], function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'Todos search list.' });
+    });
+});
  
 // port must be set to 8080 because incoming http requests are routed from port 80 to port 8080
 // Set port to 3000 for now
