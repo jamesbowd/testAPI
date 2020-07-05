@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+
+app.set('view engine', 'ejs');
+//app.engine('html', require('ejs').renderFile);
  
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -15,6 +18,9 @@ const mc = mysql.createConnection({
     password: 'Password',
     database: 'tasks_api'
 });
+
+// points express to the /public page for static pages e.g. css style sheets
+app.use(express.static("public"));
  
 // connect to database
 mc.connect();
@@ -22,6 +28,10 @@ mc.connect();
 // default route
 app.get('/', function (req, res) {
     return res.send({ error: true, message: 'hello' })
+});
+
+app.get('/home', function (req, res) {
+	res.render('index');
 });
 
 // Retrieve all todos 
